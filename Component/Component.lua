@@ -3,10 +3,10 @@ local CollectionService = game:GetService("CollectionService")
 local NexusObject = require(script.Parent.NexusObject)
 
 --[=[
-    Base component class for the component service\
-    Extended from NexusObject (by NexusAvenger)\
-    \
-	@class Component
+    Base component class for the component service
+    Extended from NexusObject (by NexusAvenger)
+
+    @class Component
 ]=]
 local Component = NexusObject:Extend()
 
@@ -41,24 +41,49 @@ export type Component = {
 
 
 --[=[
-    The instance this Component is attached to.\
-    \
-    @prop InstanceObject Instance\
+    The instance this Component is attached to.
+
+    @prop InstanceObject Instance
     @within Component
 ]=]
-Component.InstanceObject = nil :: Instance
 
 --[=[
-    The component's unique identifier.\
-    This is used by ComponentService to identify or find the component.\
-    \
-    @prop InstanceObject Instance\
+    The classname of this component.
+    You should always set this to the name of the file so that Intellisense can find it using the RobloxLSP plugin.
+    
+    #Can be set using [SetClassName](/api/Component#SetClassName)
+
+    @prop ClassName string
+    @within Component
+    @readonly
+]=]
+
+--[=[
+    Sets the classname of this component.
+    You should always set this to the name of the file so that Intellisense can find it using the RobloxLSP plugin.
+
+    ```lua
+        local TestComponent = Component:Extend()
+        TestComponent:SetClassName("TestComponent")
+
+        print(TestComponent:IsA("TestComponent")) -- true
+    ```
+
+    @function SetClassName
+    @param ClassName string
     @within Component
 ]=]
-Component.ID = nil :: string
 
 --[=[
-    Overiddeable constructor.\
+    The component's unique identifier.
+    This is used by ComponentService to identify or find the component.
+
+    @prop ID string
+    @within Component
+]=]
+
+--[=[
+    Overiddable constructor.
     ```lua
     local lamp = Component:Extend()
     function lamp:__new(Brightness : Number)
@@ -66,13 +91,14 @@ Component.ID = nil :: string
         self.Light.Brightness = Brightness
     end
     ```
+    @function __new
+    @param ... any -- The parameters you've specified
+    @within Component
+    @return Component
 ]=]
-function Component:__new()
-    return
-end
 
 --[=[
-    Allows you to extend the class into a new one.\
+    Allows you to extend the class into a new one.
     ```lua
     local lamp = Component:Extend()
     function lamp:Shine()
@@ -100,7 +126,7 @@ end
     --Lamp is shining!
 
     ```
-    For more info on nexusobject and how to use it: https://github.com/TheNexusAvenger/Nexus-Instance
+    For more info on NexusObject and how to use it: https://github.com/TheNexusAvenger/Nexus-Instance
 ]=]
 function Component:Extend()
     return NexusObject.Extend(self)
@@ -110,8 +136,8 @@ end
 --[=[
     Hides a field from the Component creator.
     When creating a new component from the creator plugin, the settings script will not include this field
---]=]
-function Component:HideField(FieldName)
+]=]
+function Component:HideField(FieldName : string)
     Component.__hiddenFields[FieldName] = true
 end
 
@@ -121,8 +147,8 @@ end
     When creating a new component from the creator plugin, the settings script will return to including this field
 
     NOTE: You do not need to call this on all your fields, fields that are not hidden will automatically be shown
---]=]
-function Component:ShowField(FieldName)
+]=]
+function Component:ShowField(FieldName : string)
     Component.__hiddenFields[FieldName] = nil
 end
 

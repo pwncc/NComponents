@@ -58,7 +58,7 @@ local function ExtendClass(SuperClass: {[string]: any}?) : NexusObject
         self.__index = self
         self.class = Class
 
-        ---NCOMPONENTMOD
+        --NCOMPONENTMOD
         --Set the instance object on our component
         self.InstanceObject = InstanceObject 
 

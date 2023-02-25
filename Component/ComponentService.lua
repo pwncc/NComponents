@@ -1,7 +1,7 @@
 --[=[
-    Handles all the components and setup
+	Handles all the components and setup
 
-	@class Components
+	@class ComponentService
 ]=]
 
 
@@ -19,38 +19,54 @@ local ComponentService = {}
 
 ComponentService.ComponentsDict = {}
 
-ComponentService._componentTypes = {}
-
+--[=[
+	Holds all the components, indexed by their names.
+	This is automatically filled when [InitializeGame](/api/ComponentService#InitializeGame) is called.
+	@readonly
+	@prop _componentTypes table
+	@within ComponentService
+]=]
+ComponentService._componentTypes = {} :: table
 
 --[=[
-	@class 
-	@param componentClass ComponentClass
-	@return Component?
+	Initializes the game. This should be called on both client and server, if you use the server for Components.
 
-	Retrieves another component instance bound to the same
-	Roblox instance.
-
---]=]
-
-function ComponentService.InitializeGame()
+	@param Components table -- A list of components that the service should load. These can later be used to create components using [InitializeGame](/api/ComponentService#AddComponent) or [InitializeGame](/api/ComponentService#GetComponent)
+]=]
+function ComponentService.InitializeGame(Components : table)
     game.DescendantAdded:Connect(ComponentService._gameObjectAdded)
+end
 
+--[=[
+	Adds a new component to the Object.
+	@return Component
+]=]
+function ComponentService.AddComponent(ComponentName : string, Object : Instance)
 
 end
 
-function ComponentService.AddComponent(ComponentName, Object)
+--[=[
+	Gets a component attached to the Object.
+	@return Component
+]=]
+function ComponentService.GetComponent(ComponentName : string, Object : Instance)
 
 end
 
-function ComponentService.GetComponent(ComponentName, Object)
+--[=[
+	Gets all components attached to the Object of type <string>ComponentName.
+	ComponentName should be the [ClassName](/api/Component#ClassName) of the component
+	@return Component
+]=]
+function ComponentService.GetComponentsOfType(ComponentName : string, Object : Instance)
 
 end
 
-function ComponentService.GetComponents(ComponentName, Object)
+function ComponentService.GetComponents(Object : Instance)
 
 end
 
-function ComponentService.FindObjectOfType(ComponentName)
+function ComponentService.FindObjectsOfType(ComponentName : string)
 
 end
 
