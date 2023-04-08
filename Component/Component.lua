@@ -8,36 +8,6 @@ local NexusObject = require(script.Parent.NexusObject)
 
     @class Component
 ]=]
-local Component = NexusObject:Extend()
-
-Component:SetClassName("NComponent")
-
-Component.__hiddenFields = {}
-
-export type Component = {
-    --Properties.
-    class: {[string]: any},
-    super: Component?,
-    ClassName: string,
-    
-    InstanceObject: Instance,
-    ID: string,
-
-
-    [string]: any,
-
-    --Static methods.
-    new: () -> (Component),
-    Extend: (self: Component) -> (Component),
-    SetClassName: (self: Component, ClassName: string) -> (),
-
-    --Methods.
-    IsA: (self: Component, ClassName: string) -> (boolean),
-
-    --Component methods
-    HideField: (self: Component, FieldName: string) -> (),
-    ShowField: (self: Component, FieldName: string) -> (),
-}
 
 
 --[=[
@@ -69,7 +39,7 @@ export type Component = {
         print(TestComponent:IsA("TestComponent")) -- true
     ```
 
-    @function SetClassName
+    @method SetClassName
     @param ClassName string
     @within Component
 ]=]
@@ -91,7 +61,7 @@ export type Component = {
         self.Light.Brightness = Brightness
     end
     ```
-    @function __new
+    @method __new
     @param ... any -- The parameters you've specified
     @within Component
     @return Component
@@ -127,7 +97,114 @@ export type Component = {
 
     ```
     For more info on NexusObject and how to use it: https://github.com/TheNexusAvenger/Nexus-Instance
+    @method Extend
+    @within Component
+    @return Component
 ]=]
+
+local Component = NexusObject:Extend()
+
+Component:SetClassName("NComponent")
+
+--[=[
+    All the fields hidden by the HideField function
+    @prop __hiddenFields table
+    @within Component
+    @private
+]=]
+Component.__hiddenFields = {}
+
+
+--[=[
+    Whether this component should only be used by the server.
+    
+    Default: [false]()
+    @prop IsServerOnly bool
+    @within Component
+]=]
+Component.IsServerOnly = false;
+
+--[=[
+    Whether this component should only be used by the client.
+    
+    Default: [false]()
+    @prop IsServerOnly bool
+    @within Component
+]=]
+Component.IsClientOnly = false;
+
+--[=[
+    Whether this component should be initialized immediately.
+    This is useful if you have a component on an object that is not used.
+    Example: A gun in replicatedstorage.
+    
+    Default: [true]()
+    @prop Dormant bool
+    @within Component
+]=]
+Component.Dormant = true;
+
+--[=[
+    A whitelist of parents that this component can initialize under.
+
+    
+    Default: [{workspace, game.Players, game.ReplicatedFirst}]()
+    @prop DormancyWhiteList table
+    @within Component
+]=]
+Component.DormancyWhiteList = {workspace, game.Players, game.ReplicatedFirst}
+
+--[=[
+    Whether this object was static
+
+    @readonly
+    @prop FromStatic bool
+    @within Component
+]=]
+Component.FromStatic = false;
+
+--[=[
+    Whether this object was Initialized
+
+    @readonly
+    @prop Initialized bool
+    @within Component
+]=]
+Component.Initialized = false;
+
+
+
+export type Component = {
+    --Properties.
+    class: {[string]: any},
+    super: Component?,
+    ClassName: string,
+    
+    InstanceObject: Instance,
+    ID: string,
+
+    IsClientOnly: boolean,
+    IsServerOnly: boolean,
+
+    Dormant: boolean,
+    DormancyWhiteList: table,
+
+
+    [string]: any,
+
+    --Static methods.
+    new: () -> (Component),
+    Extend: (self: Component) -> (Component),
+    SetClassName: (self: Component, ClassName: string) -> (),
+
+    --Methods.
+    IsA: (self: Component, ClassName: string) -> (boolean),
+
+    --Component methods
+    HideField: (self: Component, FieldName: string) -> (),
+    ShowField: (self: Component, FieldName: string) -> (),
+}
+
 function Component:Extend()
     return NexusObject.Extend(self)
 end
@@ -154,15 +231,18 @@ end
 
 function Component:_getFields()
     local fields = {}
-    for i, v in pairs(self) do
+    local fieldstocheck = self
+
+    for i, v in pairs(fieldstocheck) do
         if not typeof(i) == "string" then
             continue
         end
 
-        --Make sure this is not a private field
-        if i:sub(1,1) == "_" then
+        --Make sure it's not apart of 
+        if NexusObject[i] or i == "super" then
             continue
         end
+        
 
         --Make sure it's not apart of nexusobject or the super class
         if NexusObject[i] or i == "super" then
@@ -182,6 +262,16 @@ function Component:_getFields()
         fields[i] = v
     end
     return fields
+end
+
+
+--[=[
+    Gets called when the Component gets :Destroy() 'ed.
+    You should remove all connections that this component has while getting destroyed so it can be collected by Garbage collection.
+    NOTE: This might be done automatically however I'm not sure.
+]=]
+function Component:InstanceDestroyed()
+
 end
 
 return Component :: Component

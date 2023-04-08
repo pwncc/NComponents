@@ -1,0 +1,13 @@
+gitSourceBranch = "master"
+changelog = true
+classOrder = []
+
+organizationName = "Novius"
+projectName = "NComponents"
+url = "https://pwncc.github.io"
+baseUrl = "/NComponents"
+tagline = "A Unity-Like Component system for roblox"
+
+[footer]
+style = "dark"
+copyright = "Copyright © 2023 Novius/PwnCC"

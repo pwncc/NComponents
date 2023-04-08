@@ -1,4 +1,3 @@
-local HttpService = game:GetService("HttpService")
 --[[
 TheNexusAvenger
 
@@ -44,76 +43,28 @@ end
 Extends a class.
 --]]
 local function ExtendClass(SuperClass: {[string]: any}?) : NexusObject
-    -- Create the class.
+    --Create the class.
     local Class = {}
-    Class.super = SuperClass :: table
+    Class.super = SuperClass
     Class.__index = Class
     setmetatable(Class :: any, SuperClass)
-
-    -- Add support for headers
-    function Class:SetHeader(headerName)
-        self._currentHeader = headerName
-    end
-
-    local originalIndex = Class.__index
-    Class.__index = function(self, key)
-        if key == "SetHeader" then
-            return self.SetHeader
-        end
-
-        return originalIndex[key]
-    end
-
-    local originalNewIndex = Class.__newindex
-    Class.__newindex = function(self, key, value)
-        if self._currentHeader then
-            self._headers = self._headers or {}
-            self._headers[self._currentHeader] = self._headers[self._currentHeader] or {}
-            table.insert(self._headers[self._currentHeader], key)
-        end
-        originalNewIndex(self, key, value)
-    end
-
-    --[[
-    Creates an object without constructing it.
-    ]]--
-    
-    function Class.__newNoCtor(InstanceObject, ...)
-        --Create the base object.
-        local self = {} :: NexusObject
-        self.__index = self
-        self.class = Class
-
-        --NCOMPONENTMOD
-        --Set the instance object on our component
-        self.InstanceObject = InstanceObject 
-
-        --NCOMPONENTMOD
-        --Set the component ID on our component
-        self.ID = HttpService:GenerateGUID()
-
-        setmetatable(self :: any, Class)
-
-        --NCOMPONENTMOD
-        --Sets the _isDormant property if our component is initially dormant.
-        self._isDormant = self.Dormant
-
-        --Return the object.
-        return self
-    end
 
     --[[
     Creates an object.
     --]]
-    function Class.new(InstanceObject, ID, ...)
-        local self = Class.__newNoCtor(InstanceObject, ID, ...)
+    function Class.new(...)
+        --Create the base object.
+        local self = {} :: NexusObject
+        self.__index = self
+        self.class = Class
+        setmetatable(self :: any, Class)
 
+        --Run the constructor.
         self:__new(...)
 
         --Return the object.
         return self
     end
-
 
     --[[
     Constructor run for the class.
@@ -148,7 +99,7 @@ NexusObject.ClassName = "NexusObject"
 export type NexusObject = {
     --Properties.
     class: {[string]: any},
-    super: table,
+    super: NexusObject,
     ClassName: string,
     [string]: any,
 
@@ -176,10 +127,10 @@ end
 --[[
 Returns the object as a string.
 --]]
--- function NexusObject:__tostring(): string
---     local MemoryAddress = string.sub(RawToString(self), 8)
---     return tostring(self.ClassName)..": "..tostring(MemoryAddress)
--- end
+function NexusObject:__tostring(): string
+    local MemoryAddress = string.sub(RawToString(self), 8)
+    return tostring(self.ClassName)..": "..tostring(MemoryAddress)
+end
 
 --[[
 Returns if the object is equal to another object.
