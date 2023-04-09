@@ -5,14 +5,20 @@ local FlareEffect = NComponent:Extend()
 
 FlareEffect:SetClassName("FlareEffect")
 
+FlareEffect:SetHeader("Range values")
 FlareEffect.Max = 180
 FlareEffect.Min = 90
+
+FlareEffect:SetHeader("Do nothing values")
+FlareEffect.DoNothing = 1
 
 FlareEffect.EffectBB = game.ReplicatedStorage.BillboardGui
 FlareEffect.PartToShine = script.Parent
 
 FlareEffect:HideField("EffectBB")
 FlareEffect:HideField("PartToShine")
+
+print(FlareEffect._headers)
 
 function Angle(vectorA, vectorB)
 	return math.acos(vectorA:Dot(vectorB))

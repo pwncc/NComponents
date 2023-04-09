@@ -55,23 +55,31 @@ local function ExtendClass(SuperClass: {[string]: any}?) : NexusObject
         self._currentHeader = headerName
     end
 
-    local originalIndex = Class.__index
-    Class.__index = function(self, key)
-        if key == "SetHeader" then
-            return self.SetHeader
-        end
+	Class.__originalNewIndex = Class.__newindex or nil
+	Class.__newindex = function(self, key, value)
 
-        return originalIndex[key]
-    end
-
-    local originalNewIndex = Class.__newindex
-    Class.__newindex = function(self, key, value)
-        if self._currentHeader then
-            self._headers = self._headers or {}
-            self._headers[self._currentHeader] = self._headers[self._currentHeader] or {}
-            table.insert(self._headers[self._currentHeader], key)
+        if typeof(value) == "function" or typeof(value) == "table" then
+            rawset(self, key, value)
+            return
         end
-        originalNewIndex(self, key, value)
+		local currentHeader = rawget(self, "_currentHeader")
+		if currentHeader then
+			local selfheaders = rawget(self, "_headers")
+			
+			if not selfheaders then
+				rawset(self, "_headers", {})
+				selfheaders = {}
+			end
+			
+			if not selfheaders[currentHeader] then
+				selfheaders[currentHeader] = {}
+			end
+			
+			table.insert(selfheaders[currentHeader], key)
+            rawset(self, "_headers", selfheaders)
+		end
+		
+		rawset(self, key, value)
     end
 
     --[[
@@ -122,14 +130,14 @@ local function ExtendClass(SuperClass: {[string]: any}?) : NexusObject
         if not SuperClass then return end
         (SuperClass :: NexusObject).__new(self, ...)
     end
-
-    --Add the metamethod passthrough.
-    if SuperClass then
-        for _, MetatableName in METATABLE_METHODS do
-            Class[MetatableName] = SuperClass[MetatableName]
-        end
-    end
-
+	
+	--Add the metamethod passthrough.
+	if SuperClass then
+		for _, MetatableName in METATABLE_METHODS do
+			rawset(Class, MetatableName, SuperClass[MetatableName])
+		end
+	end
+	
     --Call the callback for the class being extended.
     if SuperClass then
         SuperClass:__classextended(Class)

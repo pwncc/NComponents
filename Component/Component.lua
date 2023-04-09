@@ -258,6 +258,16 @@ function Component:_getFields()
         if self.__hiddenFields[i] then
             continue;
         end
+
+        --Dont allow the componentname to be changed or written. This is done internally
+        if i == "ComponentName" then
+            continue;
+        end
+
+        --Exclude the headers
+        if i == "_headers" or i ==  "_currentHeader" then
+            continue;
+        end
         
         fields[i] = v
     end

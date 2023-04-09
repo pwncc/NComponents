@@ -85,4 +85,23 @@ function PluginUtils.GetComponentsOnParts(Object)
     return CompsOnPart
 end
 
+function PluginUtils.AddComponentToPart(ComponentName, objectToAddTo)
+    local ModuleSettings = Instance.new("ModuleScript", objectToAddTo)
+    local Component = loadstring(PluginUtils.GetComponentByName(ComponentName).Source)()
+    assert(Component, "No such component exists: " .. ComponentName)
+
+    local lua = "local ComponentSettings = {}"
+    lua ..= "\nComponentSettings.ComponentName = "..PluginUtils.ValueToString(Component.ClassName).." -- ClassName used by ComponentService. Do not modify\n"
+
+    for FieldName,Value in pairs(Component:_getFields()) do
+        lua ..= "ComponentSettings."..FieldName.. " = "..PluginUtils.ValueToString(Value).."\n"
+    end
+
+    lua ..= "\nreturn ComponentSettings"
+
+    ModuleSettings.Source = lua
+    ModuleSettings.Name = ComponentName
+    ModuleSettings:SetAttribute("Component", true)
+end
+
 return PluginUtils
