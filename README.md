@@ -6,3 +6,10 @@ Components can be added into instances and objects via a Plugin. The ComponentSe
 
 ## Usage
 Please check the <b>[documentation](https://pwncc.github.io/NComponents/)</b> page.
+
+
+## Credits
+
+Novius - Creator, Programming
+SamTheMagician - Explorer+ (https://devforum.roblox.com/t/explorer-a-unity-like-explorer/1621949)
+

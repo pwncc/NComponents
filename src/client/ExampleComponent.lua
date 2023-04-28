@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local NComponent = require(ReplicatedStorage.Component.Component)
+local NComponent = require(ReplicatedStorage.NEngine.Component)
 
 local Example = NComponent:Extend()
 

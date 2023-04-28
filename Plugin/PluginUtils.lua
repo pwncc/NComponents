@@ -1,5 +1,5 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ComponentService = require(ReplicatedStorage.Component.ComponentService)
+local ComponentService = require(ReplicatedStorage.NEngine.ComponentService)
 local PluginUtils = {}
 
 PluginUtils.AllComponents = {}

@@ -23,7 +23,7 @@ function Header:__new(Component, headerName, headerless)
         propertyInstance:CreateUI() -- Create UI for each property
     end
 
-    self.Component.Explorer:addHeader(self)
+    self.Component.Properties:addHeader(self)
 end
 
 -- New function to filter properties

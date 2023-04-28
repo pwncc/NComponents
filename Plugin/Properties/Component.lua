@@ -14,14 +14,14 @@ local function len(t)
     return n
 end
 
-function Component:__new(Explorer, ComponentName, SettingsModule )
+function Component:__new(Properties, ComponentName, SettingsModule )
     self.UI = script.Parent.Parent.UIComps.Component:Clone()
-    self.UI.Parent = Explorer.UI.Components
+    self.UI.Parent = Properties.UI.Components
 
-    self.Explorer = Explorer
+    self.Properties = Properties
     self.ComponentName = ComponentName;
     self.RealComponent = PluginUtils.GetComponentByName(ComponentName) :: ModuleScript
-    self.Plugin = Explorer.Plugin
+    self.Plugin = Properties.Plugin
     self.AttachedModule = SettingsModule
 
     self.Component = loadstring(self.RealComponent.Source)()

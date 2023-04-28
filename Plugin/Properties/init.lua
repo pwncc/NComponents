@@ -5,9 +5,9 @@ local PluginUtils = require(script.Parent.PluginUtils)
 local Component = require(script.Component)
 local ComponentAdder = require(script.ComponentAdder)
 
-local Explorer = NexusObject:Extend()
+local Properties = NexusObject:Extend()
 
-function Explorer:__new(plugin, PluginWindow : DockWidgetPluginGui)
+function Properties:__new(plugin, PluginWindow : DockWidgetPluginGui)
     self.Plugin = plugin
     self.UI = script.Parent.MainFrame:Clone()
 
@@ -28,7 +28,7 @@ function Explorer:__new(plugin, PluginWindow : DockWidgetPluginGui)
     Selection.SelectionChanged:Connect(function(...) self:newObjectSelected(Selection:Get()[1]) end)
 end
 
-function Explorer:newObjectSelected(object)
+function Properties:newObjectSelected(object)
     for i, v in pairs(self.CurrentComponents) do
         v:Dispose() -- Dispose of all the components currently in the list. Otherwise they would duplicate every time we selected a new object.
     end
@@ -54,14 +54,14 @@ function Explorer:newObjectSelected(object)
 end
 
 -- Filter the properties if there is text in the filter bar
-function Explorer:filterProperties(filterText)
+function Properties:filterProperties(filterText)
     for _, header in ipairs(self.CurrentHeaders) do
         header:filterProperties(filterText)
     end
 end
 
-function Explorer:addHeader(headerInstance)
+function Properties:addHeader(headerInstance)
     table.insert(self.CurrentHeaders, headerInstance)
 end
 
-return Explorer
+return Properties

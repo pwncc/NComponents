@@ -4,13 +4,13 @@ local UserInputService = game:GetService("UserInputService")
 
 local NexusObject = require(script.Parent.Parent.NexusObject)
 local PluginUtils = require(script.Parent.Parent.PluginUtils) -- Replace with the path to your PluginUtils
-local ComponentService = require(ReplicatedStorage.Component.ComponentService)
+local ComponentService = require(ReplicatedStorage.NEngine.ComponentService)
 local ComponentAdder = NexusObject:Extend()
 ComponentAdder:SetClassName("ComponentAdder")
 
-function ComponentAdder:__new(plugin, Explorer)
+function ComponentAdder:__new(plugin, Properties)
     self.plugin = plugin
-    self.Explorer = Explorer
+    self.Properties = Properties
 
     self.ComponentListUI = script.Parent.Parent.AdderFrame:Clone() -- Replace with the path to your UI
     self.ComponentButtonTemplate = script.Parent.Parent.UIComps.ComponentAdd

@@ -2,6 +2,12 @@
 local CollectionService = game:GetService("CollectionService")
 local NexusObject = require(script.Parent.NexusObject)
 
+local FIELD_BLACKLIST = {
+    ["Dormant"]=1;
+    ["__hiddenFields"]=2;
+    ["DormancyWhiteList"]=3;
+}
+
 --[=[
     Base component class for the component service
     Extended from NexusObject (by NexusAvenger)
@@ -232,44 +238,51 @@ end
 function Component:_getFields()
     local fields = {}
     local fieldstocheck = self
+	while fieldstocheck ~= nil do
+		print(fieldstocheck)
+        for i, v in pairs(fieldstocheck) do
+            if FIELD_BLACKLIST[i] then
+                continue
+            end
 
-    for i, v in pairs(fieldstocheck) do
-        if not typeof(i) == "string" then
-            continue
-        end
+            if not typeof(i) == "string" then
+                continue
+            end
 
-        --Make sure it's not apart of 
-        if NexusObject[i] or i == "super" then
-            continue
-        end
-        
+            --Make sure it's not apart of 
+            if NexusObject[i] or i == "super" then
+                continue
+            end
+            
 
-        --Make sure it's not apart of nexusobject or the super class
-        if NexusObject[i] or i == "super" then
-            continue
-        end
+            --Make sure it's not apart of nexusobject or the super class
+            if NexusObject[i] or i == "super" then
+                continue
+            end
 
-        --Make sure it's not a function, thats not a field :)
-        if typeof(v) == "function" then
-            continue
-        end
+            --Make sure it's not a function, thats not a field :)
+            if typeof(v) == "function" then
+                continue
+            end
 
-        --Make sure it's not a hidden field
-        if self.__hiddenFields[i] then
-            continue;
-        end
+            --Make sure it's not a hidden field
+            if self.__hiddenFields[i] then
+                continue;
+            end
 
-        --Dont allow the componentname to be changed or written. This is done internally
-        if i == "ComponentName" then
-            continue;
-        end
+            --Dont allow the componentname to be changed or written. This is done internally
+            if i == "ComponentName" then
+                continue;
+            end
 
-        --Exclude the headers
-        if i == "_headers" or i ==  "_currentHeader" then
-            continue;
+            --Exclude the headers
+            if i == "_headers" or i ==  "_currentHeader" then
+                continue;
+            end
+            
+            fields[i] = v
         end
-        
-        fields[i] = v
+        fieldstocheck = fieldstocheck.super
     end
     return fields
 end
